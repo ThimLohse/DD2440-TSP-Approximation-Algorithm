@@ -16,7 +16,12 @@ private:
   // vector of nodes (id, (x,y) coodrinates)
   vector<tuple<int, double, double>> nodes;
 
+  unordered_map<int, vector<pair<int, double>>> mstEdges;
+
+  vector<tuple<int, double, double>> mstNodes;
+
 public:
+  void createMST();
   void sortNeighbours();
   static bool weightComp(pair<int, double> a, pair<int, double> b);
   void setSize(int size);
