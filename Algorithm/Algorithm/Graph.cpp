@@ -38,9 +38,9 @@ void Graph::addNode(int id, double x, double y) {
     // Add new neighbour to adjecencylist both of new node and nodes already
     // represented in graph.
     edges.at(get<0>(*it))
-        .push_back(make_tuple(id, Functions::computeDist(a, b)));
+        .push_back(make_pair(id, Functions::computeDist(a, b)));
     edges.at(id).push_back(
-        make_tuple(get<0>(*it), Functions::computeDist(a, b)));
+        make_pair(get<0>(*it), Functions::computeDist(a, b)));
   }
   nodes.push_back(make_tuple(id, x, y));
 }

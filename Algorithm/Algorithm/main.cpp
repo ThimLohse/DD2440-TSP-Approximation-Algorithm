@@ -78,14 +78,14 @@ int main() {
 
   //** Calculate greedy tour **/
   /*
-  greedyTour = Functions::minimizeGreedy(vertices);
+    greedyTour = Functions::greedy(vertices, 0);
 
-  for (int i : greedyTour) {
-    cout << i << endl;
-  }
+    for (int i : greedyTour) {
+      cout << i << endl;
+    }
   */
-
   // Sort adjecencyLists O(n log n)
+
   g.sortNeighbours();
   auto nodes = g.getNodes();
   auto edges = g.getEdges();
