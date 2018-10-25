@@ -2,6 +2,7 @@
 #define GRAPH_H
 #include <iostream>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -9,11 +10,21 @@ using namespace std;
 class Graph {
 private:
   int graphSize;
-  vector<pair<int, vector<tuple<int, int>>>> nodeVector;
+  // hashmap of neighbours (id, list of neighbours with (id, weight))
+  unordered_map<int, vector<pair<int, double>>> edges;
+
+  // vector of nodes (id, (x,y) coodrinates)
+  vector<tuple<int, double, double>> nodes;
 
 public:
-  void addNode(int node);
-  Graph(int size); // constructor
+  void sortNeighbours();
+  static bool weightComp(pair<int, double> a, pair<int, double> b);
+  void setSize(int size);
+  void addFirst(int node, double x, double y);
+  void addNode(int node, double x, double y);
+  vector<tuple<int, double, double>> getNodes();
+  unordered_map<int, vector<pair<int, double>>> getEdges();
+  Graph(); // constructor
 };
 
 #endif // GRAPH_H

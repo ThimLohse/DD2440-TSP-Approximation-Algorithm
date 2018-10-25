@@ -13,8 +13,8 @@ main.o:
 	$(CC) $(CPPFLAGS) -c main.cpp
 func.o:	func.hpp
 	$(CC) $(CPPFLAGS) -c func.cpp
-graph.o:	Graph.hpp
-	$(CC) $(CPPFLAGS) -c Graph.cpp
+graph.o:	graph.hpp
+	$(CC) $(CPPFLAGS) -c graph.cpp
 clean:
 	rm -f core $(PROG) $(OBJS)
 fresh:

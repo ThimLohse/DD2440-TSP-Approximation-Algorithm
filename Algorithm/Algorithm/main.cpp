@@ -15,6 +15,7 @@
 
 // Custom headers
 #include "func.hpp"
+#include "graph.hpp"
 
 using namespace std;
 
@@ -24,6 +25,8 @@ int main() {
   // g++ -std=c++11 -stdlib=libc++ -Wno-c++98-compat main.cpp func.cpp
   // ./a.out < tsp.in
 
+  // Create new graph object
+  Graph g;
   //** The line we read from std **/
   string line;
 
@@ -56,6 +59,7 @@ int main() {
     if (first) {
       numNodes = std::stod(line, &sz);
       first = false;
+      g.setSize(numNodes);
     }
     //** Deconstruct each consecutive line into (x,y)-coordinates and store in
     // vector
@@ -63,15 +67,36 @@ int main() {
       double x = std::stod(line, &sz);
       double y = std::stod(line.substr(sz));
       vertices.push_back(make_pair(x, y));
+      if (id == 0) {
+        g.addFirst(id, x, y);
+      } else {
+        g.addNode(id, x, y);
+      }
       id++;
     }
   }
 
   //** Calculate greedy tour **/
+  /*
   greedyTour = Functions::minimizeGreedy(vertices);
 
   for (int i : greedyTour) {
     cout << i << endl;
+  }
+  */
+
+  // Sort adjecencyLists O(n log n)
+  g.sortNeighbours();
+  auto nodes = g.getNodes();
+  auto edges = g.getEdges();
+  for (auto i = nodes.begin(); i != nodes.end(); ++i) {
+    cout << get<0>(*i) << ". Neighbours --> ";
+    for (auto j = edges.at(get<0>(*i)).begin(); j != edges.at(get<0>(*i)).end();
+         j++) {
+      cout << "( N: " << get<0>(*j) << ", W:" << get<1>(*j) << " )"
+           << ", ";
+    }
+    cout << endl;
   }
 
   //** Output length of greedy tour **/
