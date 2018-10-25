@@ -22,6 +22,7 @@ int main() {
 
   // test command in terminal for c++11 features
   // g++ -std=c++11 -stdlib=libc++ -Wno-c++98-compat main.cpp func.cpp func.hpp
+  // g++ -std=c++11 -Wno-c++98-compat main.cpp func.cpp func.hpp    for linux
   // ./a.out < tsp.in
 
   //** The line we read from std **/
@@ -68,14 +69,24 @@ int main() {
   }
 
   //** Calculate greedy tour **/
-  greedyTour = Functions::minimizeGreedy(vertices);
+  //greedyTour = Functions::greedy(vertices, 0);
 
-  for (int i : greedyTour) {
+  /*for (int i : greedyTour) {
+    cout << i << endl;
+  }*/
+
+  //** Output length of greedy tour **/
+  //cout << "SUM: " << Functions::tourLength(greedyTour, vertices) << endl;
+
+  //** Calculate min tour **/
+  vector<int> betterTour;
+  betterTour = Functions::minimizeGreedy(vertices);
+
+  for (int i : betterTour) {
     cout << i << endl;
   }
 
   //** Output length of greedy tour **/
-  // cout << tourLength(greedyTour, vertices) << endl;
-
+  cout << "SUM: " << Functions::tourLength(betterTour, vertices) << endl;
   return 0;
 }

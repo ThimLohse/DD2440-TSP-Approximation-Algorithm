@@ -22,11 +22,11 @@
 
 using namespace std;
 
-int Functions::computeDist(pair<double, double> a, pair<double, double> b) {
+double Functions::computeDist(pair<double, double> a, pair<double, double> b) {
   // Euclidian distance rounded to nearest integer
   //-> sqrt( [x1 - x2]^2 + [y1 - y2]^2 )
-  return int(
-      round(sqrt(pow(a.first - b.first, 2.0) + pow(a.second - b.second, 2.0))));
+  return double(
+          sqrt(pow(a.first - b.first, 2.0) + pow(a.second - b.second, 2.0)));
 }
 int Functions::tourLength(vector<int> tour,
                           vector<pair<double, double>> vertices) {
