@@ -89,12 +89,17 @@ vector<int> Functions::minimizeGreedy(vector<pair<double, double>> vertices) {
   }
   for (int i = 0; i < numberOfSamples; i++) {
     bool search = true;
-    int startPoint = rand() % vertices.size();
-    while (search) {
-      if (used.emplace(startPoint).second) {
-        search = false;
+    int startPoint;
+    if (numberOfSamples <= 200) {
+      startPoint = i;
+    } else {
+      startPoint = rand() % (vertices.size() - 1);
+      while (search) {
+        if (used.emplace(startPoint).second) {
+          search = false;
+        }
+        startPoint = rand() % (vertices.size() - 1);
       }
-      startPoint = rand() % vertices.size();
     }
     tempTour = greedy(vertices, rand() % vertices.size());
     tempLength = tourLength(tempTour, vertices);

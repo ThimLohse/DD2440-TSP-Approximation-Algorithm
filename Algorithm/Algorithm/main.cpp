@@ -68,7 +68,7 @@ int main() {
   }
 
   //** Calculate greedy tour **/
-  greedyTour = Functions::greedy(vertices, 0);
+  greedyTour = Functions::minimizeGreedy(vertices);
 
   for (int i : greedyTour) {
     cout << i << endl;
