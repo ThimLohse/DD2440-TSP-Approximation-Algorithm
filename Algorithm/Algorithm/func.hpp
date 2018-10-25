@@ -19,7 +19,7 @@ class Functions {
   // Class member functions definitions
 public:
   //** Compute the euclidian distance between two nodes in the plane **/
-  static int computeDist(pair<double, double> a, pair<double, double> b);
+  static double computeDist(pair<double, double> a, pair<double, double> b);
 
   //** Compute the length of a tour **/
   static int tourLength(vector<int> tour,

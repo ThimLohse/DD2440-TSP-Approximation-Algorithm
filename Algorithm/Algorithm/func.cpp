@@ -22,11 +22,11 @@
 
 using namespace std;
 
-int Functions::computeDist(pair<double, double> a, pair<double, double> b) {
+double Functions::computeDist(pair<double, double> a, pair<double, double> b) {
   // Euclidian distance rounded to nearest integer
   //-> sqrt( [x1 - x2]^2 + [y1 - y2]^2 )
-  return int(
-      round(sqrt(pow(a.first - b.first, 2.0) + pow(a.second - b.second, 2.0))));
+  return double(
+      sqrt(pow(a.first - b.first, 2.0) + pow(a.second - b.second, 2.0)));
 }
 int Functions::tourLength(vector<int> tour,
                           vector<pair<double, double>> vertices) {
@@ -79,18 +79,19 @@ vector<int> Functions::minimizeGreedy(vector<pair<double, double>> vertices) {
 
   vector<int> bestTour;
   int numberOfSamples = int(vertices.size());
-  long bestLength = 129319872833351231;
-  long tempLength;
+  double bestLength = 129319872833351231;
+  double tempLength;
   std::set<int> used;
   vector<int> tempTour;
+  int SAMPLE_MAX = 200;
 
-  if (numberOfSamples > 200) {
-    numberOfSamples = 200;
+  if (numberOfSamples > SAMPLE_MAX) {
+    numberOfSamples = SAMPLE_MAX;
   }
   for (int i = 0; i < numberOfSamples; i++) {
     bool search = true;
     int startPoint;
-    if (numberOfSamples <= 200) {
+    if (numberOfSamples <= SAMPLE_MAX) {
       startPoint = i;
     } else {
       startPoint = rand() % (vertices.size() - 1);

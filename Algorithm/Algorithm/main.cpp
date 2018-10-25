@@ -21,7 +21,7 @@ using namespace std;
 int main() {
 
   // test command in terminal for c++11 features
-  // g++ -std=c++11 -stdlib=libc++ -Wno-c++98-compat main.cpp func.cpp func.hpp
+  // g++ -std=c++11 -stdlib=libc++ -Wno-c++98-compat main.cpp func.cpp
   // ./a.out < tsp.in
 
   //** The line we read from std **/
