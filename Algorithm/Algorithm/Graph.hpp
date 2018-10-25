@@ -20,6 +20,7 @@ public:
   void sortNeighbours();
   static bool weightComp(pair<int, double> a, pair<int, double> b);
   void setSize(int size);
+  int getSize();
   void addFirst(int node, double x, double y);
   void addNode(int node, double x, double y);
   vector<tuple<int, double, double>> getNodes();

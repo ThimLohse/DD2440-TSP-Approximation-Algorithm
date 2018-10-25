@@ -77,16 +77,17 @@ int main() {
   }
 
   //** Calculate greedy tour **/
-  /*
-    greedyTour = Functions::greedy(vertices, 0);
 
-    for (int i : greedyTour) {
-      cout << i << endl;
-    }
-  */
+  greedyTour = Functions::greedy(vertices, 0);
+
+  for (int i : greedyTour) {
+    cout << i << endl;
+  }
+  cout << endl;
+
   // Sort adjecencyLists O(n log n)
-
   g.sortNeighbours();
+
   auto nodes = g.getNodes();
   auto edges = g.getEdges();
   for (auto i = nodes.begin(); i != nodes.end(); ++i) {
@@ -100,7 +101,7 @@ int main() {
   }
 
   //** Output length of greedy tour **/
-  // cout << tourLength(greedyTour, vertices) << endl;
+  // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) << endl;
 
   return 0;
 }

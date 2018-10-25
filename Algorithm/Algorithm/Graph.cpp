@@ -12,6 +12,18 @@ Graph::Graph() {
   // Constructor
   // cout << "New Graph Constructed!" << endl;
 }
+void Graph::setSize(int size) {
+
+  // Set number of nodes in graph
+  graphSize = size;
+
+  // Reserve capacity (pre-allocate memory) for nodes vector for faster insert
+  nodes.reserve(size);
+
+  // Initalize edges structure
+  edges.reserve(size);
+}
+int Graph::getSize() { return graphSize; }
 bool Graph::weightComp(pair<int, double> a, pair<int, double> b) {
   return (get<1>(a) < get<1>(b));
 }
@@ -43,17 +55,6 @@ void Graph::addNode(int id, double x, double y) {
         make_pair(get<0>(*it), Functions::computeDist(a, b)));
   }
   nodes.push_back(make_tuple(id, x, y));
-}
-void Graph::setSize(int size) {
-
-  // Set number of nodes in graph
-  graphSize = size;
-
-  // Reserve capacity (pre-allocate memory) for nodes vector for faster insert
-  nodes.reserve(size);
-
-  // Initalize edges structure
-  edges.reserve(size);
 }
 vector<tuple<int, double, double>> Graph::getNodes() { return nodes; }
 unordered_map<int, vector<pair<int, double>>> Graph::getEdges() {

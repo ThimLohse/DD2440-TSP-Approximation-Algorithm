@@ -10,7 +10,9 @@
 #include <set> // for set operations
 #include <stdio.h>
 #include <string>
+#include <tuple>
 #include <unistd.h>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
