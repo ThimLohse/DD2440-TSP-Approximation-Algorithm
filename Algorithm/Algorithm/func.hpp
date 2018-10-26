@@ -20,6 +20,8 @@ using namespace std;
 class Functions {
   // Class member functions definitions
 public:
+  static vector<int> twoOpt(vector<int> path);
+  static vector<int> twoOptUtil(vector<int> current_path, int i, int k);
   //** Compute the euclidian distance between two nodes in the plane **/
   static double computeDist(pair<double, double> a, pair<double, double> b);
 

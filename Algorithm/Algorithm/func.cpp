@@ -40,6 +40,30 @@ int Functions::tourLength(vector<int> tour,
                      vertices.at(tour.at(tour.size() - 1)));
   return res;
 }
+
+vector<int> Functions::twoOpt(vector<int> path) {}
+vector<int> twoOptUtil(vector<int> current_path, int i, int k) {
+
+  // Create new placeholder
+  vector<int> new_path;
+
+  // Reserve space for path
+  new_path.reserve(path.size());
+
+  // insert start of path until i-1 of old path
+  new_path.insert(new_path.end(), current_path.begin(),
+                  current_path.begin() + (i - 1));
+
+  // insert reverse of i --> k path (swapping edges)
+  reverse_copy(current_path.begin() + i, current_path.begin() + k,
+               new_path.end());
+
+  // insert remainder of current_path into new path and return it
+  new_path.insert(new_path.end(), current_path.begin() + (k + 1),
+                  current_path.end());
+
+  return new_path;
+}
 vector<int> Functions::greedy(vector<pair<double, double>> vertices,
                               int startNode) {
 

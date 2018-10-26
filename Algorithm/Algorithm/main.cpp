@@ -99,7 +99,6 @@ int main() {
     }
     cout << endl;
   }
-  g.createMST();
 
   //** Output length of greedy tour **/
   // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) << endl;

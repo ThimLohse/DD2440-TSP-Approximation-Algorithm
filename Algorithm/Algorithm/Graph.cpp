@@ -14,44 +14,6 @@ Graph::Graph() {
   // Constructor
   // cout << "New Graph Constructed!" << endl;
 }
-
-// Prims Algorithm
-void Graph::createMST() {
-  set<int> used;
-  int index = 0;
-  try {
-    // Start with any node
-    mstNodes.push_back(nodes.at(0));
-    used.insert(0);
-    mstEdges[0];
-
-    // We should only add edges after we have found the nearest node outside of
-    // the cut!
-    mstEdges.at(0).insert(mstEdges.at(0).end(), edges.at(0).begin(),
-                          edges.at(0).end());
-
-    // Add nodes that has the minimum weight out of the cut
-    for (auto it = mstEdges.at(index).begin(); it != mstEdges.at(index).end();
-         ++it) {
-      if (used.emplace(get<0>(*it)).second) {
-        mstNodes.push_back(nodes.at(get<0>(*it)));
-
-        index = 0;
-
-      } else {
-        index++;
-      }
-      // MST can't have more nodes than the nodes in the graph so we can finish
-      // early
-      if (mstNodes.size() == graphSize) {
-        break;
-      }
-    }
-
-  } catch (exception &exc) {
-    cerr << exc.what() << endl;
-  }
-}
 void Graph::setSize(int size) {
 
   // Set number of nodes in graph

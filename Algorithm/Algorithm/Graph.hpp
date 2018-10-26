@@ -21,7 +21,6 @@ private:
   vector<tuple<int, double, double>> mstNodes;
 
 public:
-  void createMST();
   void sortNeighbours();
   static bool weightComp(pair<int, double> a, pair<int, double> b);
   void setSize(int size);
