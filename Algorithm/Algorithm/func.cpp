@@ -41,14 +41,14 @@ int Functions::tourLength(vector<int> tour,
   return res;
 }
 
-vector<int> Functions::twoOpt(vector<int> path) {}
+vector<int> Functions::twoOpt(vector<int> path) { return path; }
 vector<int> twoOptUtil(vector<int> current_path, int i, int k) {
 
   // Create new placeholder
   vector<int> new_path;
 
   // Reserve space for path
-  new_path.reserve(path.size());
+  new_path.reserve(current_path.size());
 
   // insert start of path until i-1 of old path
   new_path.insert(new_path.end(), current_path.begin(),
