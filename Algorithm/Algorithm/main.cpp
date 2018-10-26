@@ -78,9 +78,9 @@ int main() {
   }
 
   //** Calculate greedy tour **/
-  //greedyTour = Functions::greedy(vertices, 0);
+  greedyTour = Functions::greedy(vertices, 0);
 
-  /*for (int i : greedyTour) {
+  for (int i : greedyTour) {
     cout << i << endl;
   }
   cout << endl;
@@ -104,7 +104,5 @@ int main() {
   //** Output length of greedy tour **/
   // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) << endl;
 
-  //** Output length of greedy tour **/
-  cout << "SUM: " << Functions::tourLength(betterTour, vertices) << endl;
   return 0;
 }
