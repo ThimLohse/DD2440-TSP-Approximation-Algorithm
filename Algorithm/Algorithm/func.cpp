@@ -42,7 +42,7 @@ int Functions::tourLength(vector<int> tour,
 }
 
 vector<int> Functions::twoOpt(vector<int> path) { return path; }
-vector<int> twoOptUtil(vector<int> current_path, int i, int k) {
+vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k) {
 
   // Create new placeholder
   vector<int> new_path;

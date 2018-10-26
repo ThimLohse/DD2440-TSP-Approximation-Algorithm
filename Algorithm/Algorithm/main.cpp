@@ -87,21 +87,30 @@ int main() {
 
   // Sort adjecencyLists O(n log n)
   g.sortNeighbours();
-
-  auto nodes = g.getNodes();
-  auto edges = g.getEdges();
-  for (auto i = nodes.begin(); i != nodes.end(); ++i) {
-    cout << get<0>(*i) << ". Neighbours --> ";
-    for (auto j = edges.at(get<0>(*i)).begin(); j != edges.at(get<0>(*i)).end();
-         j++) {
-      cout << "( N: " << get<0>(*j) << ", W:" << get<1>(*j) << " )"
-           << ", ";
+  /*
+    auto nodes = g.getNodes();
+    auto edges = g.getEdges();
+    for (auto i = nodes.begin(); i != nodes.end(); ++i) {
+      cout << get<0>(*i) << ". Neighbours --> ";
+      for (auto j = edges.at(get<0>(*i)).begin(); j !=
+    edges.at(get<0>(*i)).end(); j++) { cout << "( N: " << get<0>(*j) << ", W:"
+    << get<1>(*j) << " )"
+             << ", ";
+      }
+      cout << endl;
     }
-    cout << endl;
-  }
+    */
 
+  cout << "OPT TOUR UTILS TEST" << endl;
+  /*vector<int> optTour = Functions::twoOptUtil(greedyTour, 2, 5);
+  for (int i : optTour) {
+    cout << i << endl;
+  }
+  cout << endl;
+  */
   //** Output length of greedy tour **/
-  // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) << endl;
+  // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) <<
+  // endl;
 
   return 0;
 }
