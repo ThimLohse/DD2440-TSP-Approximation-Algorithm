@@ -42,25 +42,72 @@ int Functions::tourLength(vector<int> tour,
 }
 
 vector<int> Functions::twoOpt(vector<int> path) { return path; }
-vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k) {
+vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k,
+                                  bool debug) {
 
+  if (debug) {
+    cout << "i=" << i << ", k=" << k << endl;
+    cout << "current path end index: "
+         << ((current_path.begin() + i) - current_path.begin()) << endl;
+    cout << "reverse path begin index: "
+         << ((current_path.begin() + (i)) - current_path.begin()) << endl;
+    cout << "reverse path end index: "
+         << ((current_path.begin() + k) - current_path.begin()) << endl;
+  }
   // Create new placeholder
   vector<int> new_path;
+
+  // Reverse path placeholder
+  vector<int> reverse_path;
+
+  // temp placeholder
+  vector<int> temp;
 
   // Reserve space for path
   new_path.reserve(current_path.size());
 
   // insert start of path until i-1 of old path
   new_path.insert(new_path.end(), current_path.begin(),
-                  current_path.begin() + (i - 1));
+                  current_path.begin() + i);
 
-  // insert reverse of i --> k path (swapping edges)
-  reverse_copy(current_path.begin() + i, current_path.begin() + k,
-               new_path.end());
+  if (debug) {
+    cout << "New path after first insertion" << endl;
+    for (int i : new_path) {
+      cout << i << ", ";
+    }
+    cout << endl;
+  }
+
+  // insert path to be reverse of i --> k path (swapping edges)
+  temp.insert(temp.begin(), (current_path.begin() + i),
+              (current_path.begin() + k));
+
+  reverse_path.insert(reverse_path.begin(), temp.rbegin(), temp.rend());
+
+  new_path.insert(new_path.end(), reverse_path.begin(), reverse_path.end());
+
+  if (debug) {
+    cout << "New path after reverse insertion" << endl;
+    for (int i : new_path) {
+      cout << i << ", ";
+    }
+    cout << endl;
+  }
 
   // insert remainder of current_path into new path and return it
-  new_path.insert(new_path.end(), current_path.begin() + (k + 1),
+  new_path.insert(new_path.end(), (current_path.begin() + k),
                   current_path.end());
+
+  if (debug) {
+    cout << "New path after last insertion" << endl;
+    int index = 0;
+    for (int i : new_path) {
+      cout << index << ":" << i << endl;
+      index++;
+    }
+    cout << endl;
+    cout << endl;
+  }
 
   return new_path;
 }

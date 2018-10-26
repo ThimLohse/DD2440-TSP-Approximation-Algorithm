@@ -45,6 +45,9 @@ int main() {
   //** Vector to hold the calculated tour **/
   vector<int> greedyTour;
 
+  //** Vector to hold the swapped 2-opt tour **/
+  vector<int> optTour;
+
   //** Id of each node pair on input. Needed for graph construction later on **/
   int id = 0;
 
@@ -101,13 +104,6 @@ int main() {
     }
     */
 
-  cout << "OPT TOUR UTILS TEST" << endl;
-  /*vector<int> optTour = Functions::twoOptUtil(greedyTour, 2, 5);
-  for (int i : optTour) {
-    cout << i << endl;
-  }
-  cout << endl;
-  */
   //** Output length of greedy tour **/
   // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) <<
   // endl;

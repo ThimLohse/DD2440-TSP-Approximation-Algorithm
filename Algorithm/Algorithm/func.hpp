@@ -20,8 +20,6 @@ using namespace std;
 class Functions {
   // Class member functions definitions
 public:
-  static vector<int> twoOpt(vector<int> path);
-  static vector<int> twoOptUtil(vector<int> current_path, int i, int k);
   //** Compute the euclidian distance between two nodes in the plane **/
   static double computeDist(pair<double, double> a, pair<double, double> b);
 
@@ -35,6 +33,11 @@ public:
 
   //** Minimize the shortest cycle trying all or random set of startnodes **/
   static vector<int> minimizeGreedy(vector<pair<double, double>> vertices);
+
+  //** 2opt functions for edge swapping optimization **/
+  static vector<int> twoOpt(vector<int> path);
+  static vector<int> twoOptUtil(vector<int> current_path, int i, int k,
+                                bool debug = false);
 };
 
 #endif // FUNCTIONS_H
