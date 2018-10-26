@@ -70,26 +70,24 @@ int main() {
       double x = std::stod(line, &sz);
       double y = std::stod(line.substr(sz));
       vertices.push_back(make_pair(x, y));
+
+      // We might not need a graph implementation.
+      /*
       if (id == 0) {
         g.addFirst(id, x, y);
       } else {
         g.addNode(id, x, y);
       }
+      */
       id++;
     }
   }
 
   //** Calculate greedy tour **/
-
   greedyTour = Functions::greedy(vertices, 0);
 
-  for (int i : greedyTour) {
-    cout << i << endl;
-  }
-  cout << endl;
-
   // Sort adjecencyLists O(n log n)
-  g.sortNeighbours();
+  // g.sortNeighbours();
   /*
     auto nodes = g.getNodes();
     auto edges = g.getEdges();
@@ -103,6 +101,12 @@ int main() {
       cout << endl;
     }
     */
+
+  // Run two-opt to improve the greedy tour
+  optTour = Functions::twoOpt(greedyTour, vertices);
+  for (int i : optTour) {
+    cout << i << endl;
+  }
 
   //** Output length of greedy tour **/
   // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) <<

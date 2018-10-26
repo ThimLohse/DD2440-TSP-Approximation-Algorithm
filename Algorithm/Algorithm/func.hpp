@@ -3,6 +3,7 @@
 
 #include <algorithm> // std::sort
 #include <cmath>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -35,7 +36,8 @@ public:
   static vector<int> minimizeGreedy(vector<pair<double, double>> vertices);
 
   //** 2opt functions for edge swapping optimization **/
-  static vector<int> twoOpt(vector<int> path);
+  static vector<int> twoOpt(vector<int> path,
+                            vector<pair<double, double>> vertices);
   static vector<int> twoOptUtil(vector<int> current_path, int i, int k,
                                 bool debug = false);
 };

@@ -41,10 +41,39 @@ int Functions::tourLength(vector<int> tour,
   return res;
 }
 
-vector<int> Functions::twoOpt(vector<int> path) { return path; }
+vector<int> Functions::twoOpt(vector<int> path,
+                              vector<pair<double, double>> vertices) {
+
+  // Todo: Determine how long this can be done on larger graph before time runs
+  // out.
+  vector<int> new_path;
+  vector<int> best_path = path;
+  double best_dist;
+  double new_dist;
+
+// Repeat until no improvement (Implementation of wikipedia pseudocode)
+// url: (https://en.wikipedia.org/wiki/2-opt)
+swapping:
+  best_dist = tourLength(best_path, vertices);
+  for (int i = 0; i < best_path.size() - 1; i++) {
+    for (int k = (i + 1); k < best_path.size(); k++) {
+      new_path = twoOptUtil(best_path, i, k);
+      new_dist = tourLength(new_path, vertices);
+
+      if (new_dist < best_dist) {
+        best_path = new_path;
+        goto swapping;
+      }
+    }
+  }
+
+  return best_path;
+}
 vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k,
                                   bool debug) {
 
+  // TODO: improve reversal and use reference to current_path to avoid creating
+  // new temporary vectors all the time.
   if (debug) {
     cout << "i=" << i << ", k=" << k << endl;
     cout << "current path end index: "
