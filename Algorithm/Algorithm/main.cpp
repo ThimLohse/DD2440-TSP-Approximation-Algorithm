@@ -22,7 +22,8 @@ using namespace std;
 int main() {
 
   // test command in terminal for c++11 features
-  // g++ -std=c++11 -stdlib=libc++ -Wno-c++98-compat main.cpp func.cpp
+  // g++ -std=c++11 -stdlib=libc++ -Wno-c++98-compat main.cpp func.cpp func.hpp
+  // g++ -std=c++11 -Wno-c++98-compat main.cpp func.cpp func.hpp    for linux
   // ./a.out < tsp.in
 
   // Create new graph object
@@ -77,10 +78,9 @@ int main() {
   }
 
   //** Calculate greedy tour **/
+  //greedyTour = Functions::greedy(vertices, 0);
 
-  greedyTour = Functions::greedy(vertices, 0);
-
-  for (int i : greedyTour) {
+  /*for (int i : greedyTour) {
     cout << i << endl;
   }
   cout << endl;
@@ -104,5 +104,7 @@ int main() {
   //** Output length of greedy tour **/
   // cout << "Greedy: " << Functions::tourLength(greedyTour, vertices) << endl;
 
+  //** Output length of greedy tour **/
+  cout << "SUM: " << Functions::tourLength(betterTour, vertices) << endl;
   return 0;
 }
