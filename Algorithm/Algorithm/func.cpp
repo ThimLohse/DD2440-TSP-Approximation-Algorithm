@@ -50,17 +50,24 @@ vector<int> Functions::twoOpt(vector<int> path,
   vector<int> best_path = path;
   double best_dist;
   double new_dist;
+  srand(time(NULL));
+
+  int ELIGABLE_NODES = best_path.size();
+  if (ELIGABLE_NODES > 150) {
+    ELIGABLE_NODES = 150;
+  }
 
 // Repeat until no improvement (Implementation of wikipedia pseudocode)
 // url: (https://en.wikipedia.org/wiki/2-opt)
 swapping:
   best_dist = tourLength(best_path, vertices);
-  for (int i = 0; i < best_path.size() - 1; i++) {
-    for (int k = (i + 1); k < best_path.size(); k++) {
+  for (int i = 1; i < ELIGABLE_NODES - 2; i++) {
+    for (int k = (i + 1); k < ELIGABLE_NODES - 1; k++) {
       new_path = twoOptUtil(best_path, i, k);
       new_dist = tourLength(new_path, vertices);
 
       if (new_dist < best_dist) {
+        cout << "Best Dist: " << new_dist << endl;
         best_path = new_path;
         goto swapping;
       }
@@ -74,6 +81,17 @@ vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k,
 
   // TODO: improve reversal and use reference to current_path to avoid creating
   // new temporary vectors all the time.
+
+  int switch_element = k;
+
+  for (auto it = (current_path.begin() + i); it != (current_path.begin() + k);
+       ++it) {
+    iter_swap(it, (current_path.begin() + switch_element));
+    switch_element--;
+  }
+
+  return current_path;
+
   if (debug) {
     cout << "i=" << i << ", k=" << k << endl;
     cout << "current path end index: "
@@ -185,7 +203,7 @@ vector<int> Functions::minimizeGreedy(vector<pair<double, double>> vertices) {
   double tempLength;
   std::set<int> used;
   vector<int> tempTour;
-  int SAMPLE_MAX = 200;
+  int SAMPLE_MAX = 60;
 
   if (numberOfSamples > SAMPLE_MAX) {
     numberOfSamples = SAMPLE_MAX;
