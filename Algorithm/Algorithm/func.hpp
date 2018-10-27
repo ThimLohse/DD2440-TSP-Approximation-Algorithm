@@ -11,6 +11,7 @@
 #include <set> // for set operations
 #include <stdio.h>
 #include <string>
+#include <time.h>
 #include <tuple>
 #include <unistd.h>
 #include <unordered_map>
@@ -25,8 +26,8 @@ public:
   static double computeDist(pair<double, double> a, pair<double, double> b);
 
   //** Compute the length of a tour **/
-  static int tourLength(vector<int> tour,
-                        vector<pair<double, double>> vertices);
+  static double tourLength(vector<int> tour,
+                           vector<pair<double, double>> vertices);
 
   //** Compute the greedy algorithm for shortest cycle from given startnode**/
   static vector<int> greedy(vector<pair<double, double>> vertices,

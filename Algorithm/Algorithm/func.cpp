@@ -30,8 +30,8 @@ double Functions::computeDist(pair<double, double> a, pair<double, double> b) {
   return double(
       sqrt(pow(a.first - b.first, 2.0) + pow(a.second - b.second, 2.0)));
 }
-int Functions::tourLength(vector<int> tour,
-                          vector<pair<double, double>> vertices) {
+double Functions::tourLength(vector<int> tour,
+                             vector<pair<double, double>> vertices) {
   int res = 0;
   for (auto it = tour.begin(); it != tour.end() - 1; it++) {
     res += computeDist(vertices.at((*it)), vertices.at((*(it + 1))));
@@ -46,6 +46,10 @@ vector<int> Functions::twoOpt(vector<int> path,
 
   // Todo: Determine how long this can be done on larger graph before time runs
   // out.
+  clock_t start;
+  start = clock();
+  clock_t end;
+  float diff;
   vector<int> new_path;
   vector<int> best_path = path;
   double best_dist;
@@ -53,21 +57,29 @@ vector<int> Functions::twoOpt(vector<int> path,
   srand(time(NULL));
 
   int ELIGABLE_NODES = best_path.size();
+/*
   if (ELIGABLE_NODES > 150) {
     ELIGABLE_NODES = 150;
   }
+  */
 
 // Repeat until no improvement (Implementation of wikipedia pseudocode)
 // url: (https://en.wikipedia.org/wiki/2-opt)
 swapping:
+
   best_dist = tourLength(best_path, vertices);
   for (int i = 1; i < ELIGABLE_NODES - 2; i++) {
     for (int k = (i + 1); k < ELIGABLE_NODES - 1; k++) {
       new_path = twoOptUtil(best_path, i, k);
       new_dist = tourLength(new_path, vertices);
+      end = clock() - start;
+      diff = (((float)end) / CLOCKS_PER_SEC);
+      if (diff >= float(1.6)) {
 
+        return best_path;
+      }
       if (new_dist < best_dist) {
-        cout << "Best Dist: " << new_dist << endl;
+        // cout << "Best Dist: " << new_dist << endl;
         best_path = new_path;
         goto swapping;
       }
@@ -81,7 +93,6 @@ vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k,
 
   // TODO: improve reversal and use reference to current_path to avoid creating
   // new temporary vectors all the time.
-
   int switch_element = k;
 
   for (auto it = (current_path.begin() + i); it != (current_path.begin() + k);
@@ -91,72 +102,6 @@ vector<int> Functions::twoOptUtil(vector<int> current_path, int i, int k,
   }
 
   return current_path;
-
-  if (debug) {
-    cout << "i=" << i << ", k=" << k << endl;
-    cout << "current path end index: "
-         << ((current_path.begin() + i) - current_path.begin()) << endl;
-    cout << "reverse path begin index: "
-         << ((current_path.begin() + (i)) - current_path.begin()) << endl;
-    cout << "reverse path end index: "
-         << ((current_path.begin() + k) - current_path.begin()) << endl;
-  }
-  // Create new placeholder
-  vector<int> new_path;
-
-  // Reverse path placeholder
-  vector<int> reverse_path;
-
-  // temp placeholder
-  vector<int> temp;
-
-  // Reserve space for path
-  new_path.reserve(current_path.size());
-
-  // insert start of path until i-1 of old path
-  new_path.insert(new_path.end(), current_path.begin(),
-                  current_path.begin() + i);
-
-  if (debug) {
-    cout << "New path after first insertion" << endl;
-    for (int i : new_path) {
-      cout << i << ", ";
-    }
-    cout << endl;
-  }
-
-  // insert path to be reverse of i --> k path (swapping edges)
-  temp.insert(temp.begin(), (current_path.begin() + i),
-              (current_path.begin() + k));
-
-  reverse_path.insert(reverse_path.begin(), temp.rbegin(), temp.rend());
-
-  new_path.insert(new_path.end(), reverse_path.begin(), reverse_path.end());
-
-  if (debug) {
-    cout << "New path after reverse insertion" << endl;
-    for (int i : new_path) {
-      cout << i << ", ";
-    }
-    cout << endl;
-  }
-
-  // insert remainder of current_path into new path and return it
-  new_path.insert(new_path.end(), (current_path.begin() + k),
-                  current_path.end());
-
-  if (debug) {
-    cout << "New path after last insertion" << endl;
-    int index = 0;
-    for (int i : new_path) {
-      cout << index << ":" << i << endl;
-      index++;
-    }
-    cout << endl;
-    cout << endl;
-  }
-
-  return new_path;
 }
 vector<int> Functions::greedy(vector<pair<double, double>> vertices,
                               int startNode) {
