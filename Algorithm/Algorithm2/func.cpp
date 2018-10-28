@@ -94,6 +94,7 @@ vector<int> Functions::greedy(vector<vector<double>> distances, int startNode) {
 // Generate multiple greedy tours and return the shortest
 vector<int> Functions::minimizeGreedy(vector<vector<double>> distances) {
 
+  srand((unsigned int)(time(NULL)));
   clock_t t;
   float end;
   t = clock();
@@ -150,6 +151,10 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
   clock_t start;
   start = clock();
   float limit = float(1.0);
+  int best_i;
+  int best_j;
+  double best_improvement;
+  double current_improvement;
 
   bool isOptimal = false;
   int tourLen = tour.size();
@@ -157,6 +162,7 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
   int A1, A2, B1, B2;
   do {
   improve:
+    best_improvement = 0;
     isOptimal = true;
     for (int i = 0; i < tourLen - 3; i++) {
 
@@ -174,10 +180,10 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
           // printf("time: %f\n", time_passed);
           goto abort;
         }
-
         B1 = tour[j];
         B2 = tour[(j + 1) % tourLen];
         // Check if swapping edges gives a decrease in length
+
         if (improvedBy(A1, A2, B1, B2, distances) > 0) {
           swapEdges(tour, i, j, tourLen);
           isOptimal = false;
@@ -185,6 +191,7 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
         }
       }
     }
+
   } while (!isOptimal);
 
 abort:
