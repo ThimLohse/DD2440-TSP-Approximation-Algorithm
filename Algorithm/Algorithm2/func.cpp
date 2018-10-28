@@ -107,7 +107,7 @@ vector<int> Functions::minimizeGreedy(vector<vector<double>> distances) {
   int numNodes = int(distances.size());
   int startPoint;
   bool isUsed;
-  int NODE_MAX = 60;
+  int NODE_MAX = 50;
 
   // If small number of nodes, calculate all possible greedy tours
   if (numNodes <= NODE_MAX) {
@@ -142,6 +142,77 @@ vector<int> Functions::minimizeGreedy(vector<vector<double>> distances) {
       }
     }
   }
-
   return bestTour;
+}
+
+void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
+
+  clock_t start;
+  start = clock();
+  float limit = float(1.5);
+
+  bool isOptimal = false;
+  int tourLen = tour.size();
+  int stopAfter;
+  int A1, A2, B1, B2;
+  do {
+  improve:
+    isOptimal = true;
+    for (int i = 0; i < tourLen - 3; i++) {
+
+      // First node in first pair
+      A1 = tour[i];
+      // Consecutive node to first node in pair
+      A2 = tour[(i + 1) % tourLen];
+
+      stopAfter = (i == 0 ? tourLen - 2 : tourLen - 1);
+      for (int j = (i + 2); j < stopAfter; j++) {
+
+        // Abort if too much time has passed
+        float time_passed = (float(clock() - start) / CLOCKS_PER_SEC);
+        if (time_passed >= limit) {
+          // printf("time: %f\n", time_passed);
+          goto abort;
+        }
+
+        B1 = tour[j];
+        B2 = tour[(j + 1) % tourLen];
+        // Check if swapping edges gives a decrease in length
+        if (improvedBy(A1, A2, B1, B2, distances) > 0) {
+          swapEdges(tour, i, j, tourLen);
+          isOptimal = false;
+          goto improve;
+        }
+      }
+    }
+  } while (!isOptimal);
+
+abort:
+  return;
+}
+// Check if an improvement is possible if chaning the edges between two pairs of
+// nodes.
+double Functions::improvedBy(int A1, int A2, int B1, int B2,
+                             vector<vector<double>> distances) {
+  // We assume that A1-A2 and B1-B2
+  double currentLength = distances[A1][A2] + distances[B1][B2];
+  double changedLength = distances[A1][B1] + distances[A2][B2];
+
+  // If changed length is shorter we will return the distance gain as positive,
+  // otherwise negative
+  return (currentLength - changedLength);
+}
+void Functions::swapEdges(vector<int> &tour, int i, int j, int tourLen) {
+
+  int LEFT = ((i + 1) % tourLen);
+  int RIGHT = j;
+  int numSwaps = ((tourLen + (RIGHT - LEFT) + 1) % tourLen) / 2;
+
+  for (int swap = 0; swap < numSwaps; swap++) {
+    int temp = tour[LEFT];
+    tour[LEFT] = tour[RIGHT];
+    tour[RIGHT] = temp;
+    LEFT = (LEFT + 1) % tourLen;
+    RIGHT = (tourLen + RIGHT - 1) % tourLen;
+  }
 }

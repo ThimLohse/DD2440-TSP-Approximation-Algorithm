@@ -32,6 +32,10 @@ public:
   static vector<int> greedy(vector<vector<double>> distances, int startNode);
   static vector<int> minimizeGreedy(vector<vector<double>> distances);
   static double tourLength(vector<int> tour, vector<vector<double>> distances);
+  static double improvedBy(int A1, int A2, int B1, int B2,
+                           vector<vector<double>> distances);
+  static void swapEdges(vector<int> &tour, int i, int j, int tourLen);
+  static void twoOpt(vector<int> &tour, vector<vector<double>> distances);
 };
 
 #endif // FUNCTIONS_H

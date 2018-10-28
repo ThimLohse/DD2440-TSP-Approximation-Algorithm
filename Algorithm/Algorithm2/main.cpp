@@ -83,6 +83,7 @@ int main() {
   }
   distances = Functions::createDistMatrix(coordinates, numNodes);
   greedyTour = Functions::minimizeGreedy(distances);
+  Functions::twoOpt(greedyTour, distances);
   for (int i : greedyTour) {
     cout << i << endl;
   }
