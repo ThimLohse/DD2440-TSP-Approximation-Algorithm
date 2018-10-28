@@ -68,23 +68,24 @@ vector<int> Functions::twoOpt(vector<int> path,
 swapping:
 
   best_dist = tourLength(best_path, vertices);
-  for (int i = 1; i < ELIGABLE_NODES - 2; i++) {
-    for (int k = (i + 1); k < ELIGABLE_NODES - 1; k++) {
+  for (int i = 0; i < ELIGABLE_NODES - 2; i++) {
+    for (int k = (i + 2); k < ELIGABLE_NODES - 1; k++) {
       new_path = twoOptUtil(best_path, i, k);
       new_dist = tourLength(new_path, vertices);
       end = clock() - start;
       diff = (((float)end) / CLOCKS_PER_SEC);
-      if (diff >= float(1.6)) {
+      if (diff >= float(1.8)) {
 
         return best_path;
       }
       if (new_dist < best_dist) {
-        // cout << "Best Dist: " << new_dist << endl;
+        cout << "Best Dist: " << new_dist << endl;
         best_path = new_path;
         goto swapping;
       }
     }
   }
+  goto swapping;
 
   return best_path;
 }
@@ -148,7 +149,7 @@ vector<int> Functions::minimizeGreedy(vector<pair<double, double>> vertices) {
   double tempLength;
   std::set<int> used;
   vector<int> tempTour;
-  int SAMPLE_MAX = 60;
+  int SAMPLE_MAX = 100;
 
   if (numberOfSamples > SAMPLE_MAX) {
     numberOfSamples = SAMPLE_MAX;
