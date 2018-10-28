@@ -107,7 +107,7 @@ vector<int> Functions::minimizeGreedy(vector<vector<double>> distances) {
   int numNodes = int(distances.size());
   int startPoint;
   bool isUsed;
-  int NODE_MAX = 50;
+  int NODE_MAX = 200;
 
   // If small number of nodes, calculate all possible greedy tours
   if (numNodes <= NODE_MAX) {
@@ -149,7 +149,7 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
 
   clock_t start;
   start = clock();
-  float limit = float(1.5);
+  float limit = float(1.0);
 
   bool isOptimal = false;
   int tourLen = tour.size();
