@@ -84,9 +84,9 @@ int main() {
   distances = Functions::createDistMatrix(coordinates, numNodes);
   greedyTour = Functions::minimizeGreedy(distances);
   Functions::twoOpt(greedyTour, distances);
-  for (int i : greedyTour) {
+  /*for (int i : greedyTour) {
     cout << i << endl;
-  }
+  }*/
   /*
     t = clock() - t;
     printf("It took me %lu clicks (%f seconds).\n", t,

@@ -148,51 +148,59 @@ vector<int> Functions::minimizeGreedy(vector<vector<double>> distances) {
 
 void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
 
+  srand((unsigned long)(time(NULL)));
   clock_t start;
   start = clock();
-  float limit = float(1.0);
+  float limit = float(1.5);
   int best_i;
   int best_j;
   double best_improvement;
   double current_improvement;
 
-  bool isOptimal = false;
   int tourLen = tour.size();
   int stopAfter;
   int A1, A2, B1, B2;
-  do {
-  improve:
-    best_improvement = 0;
-    isOptimal = true;
-    for (int i = 0; i < tourLen - 3; i++) {
 
-      // First node in first pair
-      A1 = tour[i];
-      // Consecutive node to first node in pair
-      A2 = tour[(i + 1) % tourLen];
+improve:
+  //best_improvement = 0;
+  for (int i = 0; i < tourLen - 3; i++) {
+    cout << "i: " << i << "tourlen: " << tourLen << endl;
+    int random_index = rand() % tourLen - 1;
+    // First node in first pair
+    A1 = tour[random_index];
+    // Consecutive node to first node in pair
+    A2 = tour[(random_index + 1) % tourLen];
 
-      stopAfter = (i == 0 ? tourLen - 2 : tourLen - 1);
-      for (int j = (i + 2); j < stopAfter; j++) {
+    //tourlength differs depending on start?
+    //stopAfter = (random_index == 0 ? tourLen - 2 : tourLen - 1);
+    //stopAfter = (random_index + 10) % tourLen;
+    for (int j = 0; j < 10; j++) {
 
-        // Abort if too much time has passed
-        float time_passed = (float(clock() - start) / CLOCKS_PER_SEC);
-        if (time_passed >= limit) {
-          // printf("time: %f\n", time_passed);
-          goto abort;
-        }
-        B1 = tour[j];
-        B2 = tour[(j + 1) % tourLen];
-        // Check if swapping edges gives a decrease in length
+      // Abort if too much time has passed
+      float time_passed = (float(clock() - start) / CLOCKS_PER_SEC);
+      if (time_passed >= limit) {
+        // printf("time: %f\n", time_passed);
+        goto abort;
+      }
 
-        if (improvedBy(A1, A2, B1, B2, distances) > 0) {
-          swapEdges(tour, i, j, tourLen);
-          isOptimal = false;
-          goto improve;
-        }
+      int random_indexB = random_index;
+      while(random_index == random_indexB) {
+        random_indexB = rand() % tourLen - 1;
+      }
+
+      B1 = tour[random_indexB];
+      B2 = tour[(random_indexB + 1) % tourLen];
+      // Check if swapping edges gives a decrease in length
+      //cout << "i: " << i << "j: " << j << endl;
+
+      if (improvedBy(A1, A2, B1, B2, distances) > 0.5) {
+        swapEdges(tour, random_index, random_indexB, tourLen);
+        cout << tourLength(tour, distances) << endl;
+        cout << " we good" << endl;
+        goto improve;
       }
     }
-
-  } while (!isOptimal);
+  }
 
 abort:
   return;
@@ -214,12 +222,14 @@ void Functions::swapEdges(vector<int> &tour, int i, int j, int tourLen) {
   int LEFT = ((i + 1) % tourLen);
   int RIGHT = j;
   int numSwaps = ((tourLen + (RIGHT - LEFT) + 1) % tourLen) / 2;
-
+  cout << "swap start" << endl;
   for (int swap = 0; swap < numSwaps; swap++) {
     int temp = tour[LEFT];
     tour[LEFT] = tour[RIGHT];
     tour[RIGHT] = temp;
     LEFT = (LEFT + 1) % tourLen;
     RIGHT = (tourLen + RIGHT - 1) % tourLen;
+    cout << " a swap" << endl;
   }
+  cout << " swap stop" << endl;
 }
