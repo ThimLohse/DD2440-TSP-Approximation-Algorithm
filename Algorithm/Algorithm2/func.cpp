@@ -95,10 +95,6 @@ vector<int> Functions::greedy(vector<vector<double>> distances, int startNode) {
 vector<int> Functions::minimizeGreedy(vector<vector<double>> distances) {
 
   srand((unsigned int)(time(NULL)));
-  clock_t t;
-  float end;
-  t = clock();
-  float limit = float(0.5);
 
   set<int> used;
   double bestLength = 2147483637;

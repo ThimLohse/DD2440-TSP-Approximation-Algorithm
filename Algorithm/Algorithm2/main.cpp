@@ -22,9 +22,9 @@ using namespace std;
 
 int main() {
 
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
   // Initalize timer
-  clock_t t;
-  t = clock();
 
   // Initalize line to read from std
   string line;
@@ -60,7 +60,20 @@ int main() {
   // starting points for minimize greedy. Using current time of the device.
   srand((unsigned int)(time(NULL)));
 
+  cin >> numNodes;
+
   // Read in all the vertices
+  int id = 0;
+  double x;
+  double y;
+  while (id < numNodes) {
+    cin >> x;
+    cin >> y;
+    coordinates.push_back(make_pair(x, y));
+    nodes.push_back(id);
+    id++;
+  }
+  /*
   while (getline(cin, line)) {
 
     // Extract number of nodes
@@ -81,16 +94,12 @@ int main() {
       id++;
     }
   }
+  */
   distances = Functions::createDistMatrix(coordinates, numNodes);
   greedyTour = Functions::minimizeGreedy(distances);
   Functions::twoOpt(greedyTour, distances);
   for (int i : greedyTour) {
-    cout << i << endl;
+    cout << i << "\n";
   }
-  /*
-    t = clock() - t;
-    printf("It took me %lu clicks (%f seconds).\n", t,
-           ((float)t) / CLOCKS_PER_SEC);
-  */
   return 0;
 }
