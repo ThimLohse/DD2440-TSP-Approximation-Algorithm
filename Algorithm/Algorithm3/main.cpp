@@ -84,13 +84,26 @@ int main() {
   srand((unsigned long)(time(NULL)));
   int limit = 1995000;
   int limit2 = 500000;
-
+  /*
+    for (int i = 0; i < numNodes; i++) {
+      if (current_time >= limit2) {
+        break;
+      }
+      currentTour = greedyTour(distances, rand() % numNodes);
+      currentDist = distance(currentTour, distances);
+      if (currentDist < bestDist) {
+        bestDist = currentDist;
+        bestTour = currentTour;
+      }
+      current_time =
+          duration_cast<microseconds>(high_resolution_clock::now() - start_time)
+              .count();
+    }*/
   for (int i = 0; i < numNodes; i++) {
-    if (current_time >= limit2) {
-      break;
-    }
-    currentTour = greedyTour(distances, i);
+    currentTour = greedyTour(distances, rand() % numNodes);
+    currentTour = twoOpt(currentTour, distances, start_time);
     currentDist = distance(currentTour, distances);
+
     if (currentDist < bestDist) {
       bestDist = currentDist;
       bestTour = currentTour;
@@ -98,10 +111,12 @@ int main() {
     current_time =
         duration_cast<microseconds>(high_resolution_clock::now() - start_time)
             .count();
+    if (current_time >= limit) {
+      break;
+    }
   }
-  currentTour = twoOpt(bestTour, distances, start_time);
   for (int i = 0; i < numNodes; i++) {
-    cout << currentTour[i] << "\n";
+    cout << bestTour[i] << "\n";
   }
   /*
   for (int i = 0; i < numNodes; i++) {
@@ -135,8 +150,9 @@ int main() {
 
     cout << "time: " << (current_time / (pow(10, 6))) << " seconds"
          << "\n";
-    cout << "Best distance: " << distance(bestTour, distances) << "\n";
-  */
+         */
+  // cout << "Best distance: " << distance(bestTour, distances) << "\n";
+
   return 0;
 }
 
@@ -170,6 +186,7 @@ double distance(int *tour, double **distances) {
   for (int i = 0; i < numNodes - 1; i++) {
     res += distances[tour[i]][tour[i + 1]];
   }
+  res += distances[tour[0]][tour[numNodes - 1]];
   return res;
 }
 int *swapEdges(int *tour, int i, int j) {
@@ -241,28 +258,53 @@ int *twoOpt(int *startTour, double **distances,
       A1 = tour[i];
       // Consecutive node to first node in pair
       A2 = tour[(i + 1) % numNodes];
+      // Randomness
+      /*
+            int random_index_i = rand() % (numNodes - 3);
 
+            A1 = tour[random_index_i];
+
+            A2 = tour[(random_index_i + 1) % numNodes];
+      */
       stopAfter = (i == 0 ? numNodes - 2 : numNodes - 1);
+      // stopAfter = numNodes - 1;
       for (int j = (i + 2); j < stopAfter; j++) {
-
         B1 = tour[j];
         B2 = tour[(j + 1) % numNodes];
+
+        // Randomness
+        /*
+        int random_index_j = random_index_i + 2;
+        if (random_index_j >= stopAfter) {
+          break;
+        }
+        B1 = tour[random_index_j];
+        B2 = tour[(random_index_j + 1) % numNodes];
+         */
 
         if (duration_cast<microseconds>(high_resolution_clock::now() -
                                         start_time)
                 .count() > 1995000) {
-          return tour;
+          return globalBest;
         }
         // Check if swapping edges gives a decrease in length
         double currentLength = distances[A1][A2] + distances[B1][B2];
         double changedLength = distances[A1][B1] + distances[A2][B2];
 
-        if ((currentLength - changedLength) > 1) {
+        if ((currentLength - changedLength) > 0) {
           // tour = swapEdges(tour, i, j);
 
           // Swap edges
+
           int LEFT = ((i + 1) % numNodes);
           int RIGHT = j;
+
+          // Randomness
+          /*
+          int LEFT = ((random_index_i + 1) % numNodes);
+          int RIGHT = ((random_index_j));
+           */
+
           int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
 
           for (int swap = 0; swap < numSwaps; ++swap) {
@@ -273,19 +315,19 @@ int *twoOpt(int *startTour, double **distances,
             RIGHT = (numNodes + RIGHT - 1) % numNodes;
           }
 
-          // current_improvement = distance(tour, distances);
-          /*
+          current_improvement = distance(tour, distances);
+
           if (current_improvement < best_improvement) {
 
             best_improvement = current_improvement;
             globalBest = tour;
           }
-          */
+
           isOptimal = false;
           goto improve;
         }
       }
     }
   } while (!isOptimal);
-  return tour;
+  return globalBest;
 }
