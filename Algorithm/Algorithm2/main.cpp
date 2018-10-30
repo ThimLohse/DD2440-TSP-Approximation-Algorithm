@@ -13,18 +13,23 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <math.h>
+#include <limits.h>
 
 // Custom headers
 #include "func.hpp"
 
 // run: make tsp_opt or make, then run: ./tsp < "input_file"
 using namespace std;
+using namespace std::chrono;
 
 int main() {
 
   // Initalize timer
-  clock_t t;
-  t = clock();
+  high_resolution_clock::time_point t1 = high_resolution_clock::now();
+  high_resolution_clock::time_point t2;
+  int currentTime;
 
   // Initalize line to read from std
   string line;
@@ -60,6 +65,7 @@ int main() {
   // starting points for minimize greedy. Using current time of the device.
   srand((unsigned int)(time(NULL)));
 
+
   // Read in all the vertices
   while (getline(cin, line)) {
 
@@ -81,12 +87,19 @@ int main() {
       id++;
     }
   }
-  distances = Functions::createDistMatrix(coordinates, numNodes);
-  greedyTour = Functions::minimizeGreedy(distances);
-  Functions::twoOpt(greedyTour, distances);
-  /*for (int i : greedyTour) {
+
+while (currentTime < 1850000) {
+  //  printf("time main: %f\n", currentTime);
+    distances = Functions::createDistMatrix(coordinates, numNodes);
+    greedyTour = Functions::minimizeGreedy(distances);
+    Functions::twoOpt(greedyTour, distances);
+
+    currentTime = duration_cast<microseconds>( high_resolution_clock::now() - t1 ).count();
+  }
+
+/*  for (int i : greedyTour) {
     cout << i << endl;
-  }*/
+  } */
   /*
     t = clock() - t;
     printf("It took me %lu clicks (%f seconds).\n", t,
