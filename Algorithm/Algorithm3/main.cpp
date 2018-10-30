@@ -82,7 +82,7 @@ int main() {
   coordinates.clear();
 
   srand((unsigned long)(time(NULL)));
-  int limit = 1998800;
+  int limit = 1998805;
 
   for (int i = 0; i < numNodes; i++) {
     current_time =
@@ -91,8 +91,8 @@ int main() {
     if (current_time >= limit) {
       break;
     }
-    // currentTour = greedyTour(distances, rand() % numNodes);
     currentTour = greedyTour(distances, rand() % numNodes);
+    // currentTour = greedyTour(distances, i);
     currentTour = twoOpt(currentTour, distances, start_time);
     currentDist = distance(currentTour, distances);
 
@@ -220,7 +220,7 @@ int *twoOpt(int *startTour, double **distances,
     isOptimal = true;
     for (int i = 0; i < numNodes - 3; i++) {
       if (duration_cast<microseconds>(high_resolution_clock::now() - start_time)
-              .count() > 1998800) {
+              .count() > 1998805) {
         return tour;
       }
       // First node in first pair
@@ -252,7 +252,7 @@ int *twoOpt(int *startTour, double **distances,
         */
         if (duration_cast<microseconds>(high_resolution_clock::now() -
                                         start_time)
-                .count() > 1998800) {
+                .count() > 1998805) {
           return tour;
         }
         // Check if swapping edges gives a decrease in length
