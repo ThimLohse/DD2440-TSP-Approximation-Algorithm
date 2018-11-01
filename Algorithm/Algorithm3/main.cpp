@@ -9,11 +9,8 @@
 // Standard headers
 #include <chrono>
 #include <cmath>
-#include <ctime>
-#include <fstream>
 #include <iostream>
 #include <stdio.h>
-#include <string>
 #include <vector>
 
 // Global variable numNodes;
@@ -27,21 +24,18 @@ double distance(int *tour, double **distances);
 // Calculate the greedy tour
 int *greedyTour(double **distances, int startPoint);
 
-double improvedBy(int A1, int A2, int B1, int B2, double **distances);
-int *swapEdges(int *tour, int i, int j);
 int *twoOpt(int *tour, double **distances,
             high_resolution_clock::time_point start_time);
+int *twoHOpt(int *tour, double **distances,
+             high_resolution_clock::time_point start_time);
 
 int main() {
 
+  // Initalize timer and standard input
   high_resolution_clock::time_point start_time = high_resolution_clock::now();
   int current_time;
   std::ios::sync_with_stdio(false);
   cin.tie(NULL);
-  // Initalize timer
-
-  // Counter to give each node an ID
-  int id = 0;
 
   // Vector to hold the coordinates until distances are calculated
   vector<pair<double, double>> coordinates;
@@ -49,6 +43,7 @@ int main() {
   cin >> numNodes;
   // Vector matrix to hold the distances between nodes (Adjeceny matrix)
   // int distances[numNodes * numNodes];
+  coordinates.reserve(numNodes);
 
   // Vector to hold the calculated greedy tour
   int *currentTour;
@@ -62,11 +57,8 @@ int main() {
   int startPoint;
   int *bestTour;
 
-  while (id < numNodes) {
-    cin >> x;
-    cin >> y;
+  while (cin >> x && cin >> y) {
     coordinates.push_back(make_pair(x, y));
-    id++;
   }
 
   // Generate distance matrix
@@ -83,6 +75,7 @@ int main() {
 
   srand((unsigned long)(time(NULL)));
   int limit = 1998805;
+  // 1998805
 
   for (int i = 0; i < numNodes; i++) {
     current_time =
@@ -91,41 +84,20 @@ int main() {
     if (current_time >= limit) {
       break;
     }
-    currentTour = greedyTour(distances, rand() % numNodes);
     // currentTour = greedyTour(distances, i);
-    currentTour = twoOpt(currentTour, distances, start_time);
-    currentDist = distance(currentTour, distances);
-
-    if (currentDist < bestDist) {
-      bestDist = currentDist;
-      bestTour = currentTour;
-    }
-  }
-  for (int i = 0; i < numNodes; i++) {
-    cout << bestTour[i] << "\n";
-  }
-  /*
-  for (int i = 0; i < numNodes; i++) {
-    if (current_time >= limit) {
-      break;
-    }
-
     currentTour = greedyTour(distances, rand() % numNodes);
     currentTour = twoOpt(currentTour, distances, start_time);
+    // currentTour = twoHOpt(currentTour, distances, start_time);
     currentDist = distance(currentTour, distances);
 
     if (currentDist < bestDist) {
       bestDist = currentDist;
       bestTour = currentTour;
     }
-    current_time =
-        duration_cast<microseconds>(high_resolution_clock::now() - start_time)
-            .count();
   }
   for (int i = 0; i < numNodes; i++) {
     cout << bestTour[i] << "\n";
   }
-  */
   /*
     current_time =
         duration_cast<microseconds>(high_resolution_clock::now() - start_time)
@@ -175,45 +147,83 @@ double distance(int *tour, double **distances) {
   res += distances[tour[0]][tour[numNodes - 1]];
   return res;
 }
-int *swapEdges(int *tour, int i, int j) {
-  int *newTour = new int[numNodes];
-  int LEFT = ((i + 1) % numNodes);
-  int RIGHT = j;
-  int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
-
-  for (int swap = 0; swap < numSwaps; ++swap) {
-    int temp = tour[LEFT];
-    tour[LEFT] = tour[RIGHT];
-    tour[RIGHT] = temp;
-    LEFT = (LEFT + 1) % numNodes;
-    RIGHT = (numNodes + RIGHT - 1) % numNodes;
-  }
-
-  return tour;
-}
-// Check if an improvement is possible if chaning the edges between two pairs of
-// nodes.
-double improvedBy(int A1, int A2, int B1, int B2, double **distances) {
-  // We assume that A1-A2 and B1-B2
-  double currentLength = distances[A1][A2] + distances[B1][B2];
-  double changedLength = distances[A1][B1] + distances[A2][B2];
-
-  // If changed length is shorter we will return the distance gain as positive,
-  // otherwise negative
-  return (currentLength - changedLength);
-}
 // Two opt with swap and reverse in same function for efficiency
 int *twoOpt(int *startTour, double **distances,
             high_resolution_clock::time_point start_time) {
 
-  double best_improvement = __DBL_MAX__;
-  double current_improvement = distance(startTour, distances);
   int *tour = startTour;
-  int *globalBest = startTour;
-
   bool isOptimal = false;
   int stopAfter;
   int A1, A2, B1, B2;
+  do {
+  improve:
+
+    isOptimal = true;
+    for (int i = 0; i < numNodes - 3; i++) {
+      if (duration_cast<microseconds>(high_resolution_clock::now() - start_time)
+              .count() > 1998805) {
+
+        return tour;
+      }
+      // First node in first pair
+      A1 = tour[i];
+      // Consecutive node to first node in pair
+      A2 = tour[(i + 1) % numNodes];
+
+      stopAfter = (i == 0 ? numNodes - 2 : numNodes - 1);
+      // stopAfter = numNodes - 1;
+      for (int j = (i + 2); j < stopAfter; j++) {
+        B1 = tour[j];
+        B2 = tour[(j + 1) % numNodes];
+
+        if (duration_cast<microseconds>(high_resolution_clock::now() -
+                                        start_time)
+                .count() > 1998805) {
+          return tour;
+        }
+        // Check if swapping edges gives a decrease in length
+        double currentLength = distances[A1][A2] + distances[B1][B2];
+        double changedLength = distances[A1][B1] + distances[A2][B2];
+
+        if ((currentLength - changedLength) > 0) {
+
+          // Swap edges
+          int _LEFT = i;
+          int _RIGHT = j;
+          int LEFT = ((_LEFT + 1) % numNodes);
+          int RIGHT = _RIGHT;
+
+          int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
+
+          for (int swap = 0; swap < numSwaps; ++swap) {
+            int temp = tour[LEFT];
+            tour[LEFT] = tour[RIGHT];
+            tour[RIGHT] = temp;
+            LEFT = (LEFT + 1) % numNodes;
+            RIGHT = (numNodes + RIGHT - 1) % numNodes;
+          }
+
+          isOptimal = false;
+          // goto improve;
+          // break;
+        }
+      }
+    }
+  } while (!isOptimal);
+  return tour;
+}
+// Two opt with swap and reverse in same function for efficiency
+int *twoHOpt(int *startTour, double **distances,
+             high_resolution_clock::time_point start_time) {
+
+  int *tour = startTour;
+
+  bool isOptimal = false;
+  int stopAfter;
+  int A1, A2, B1, B2, SwapNode;
+
+  double first_switch_dist = 0;
+  double dA1B1, dA2B2, dA2B1 = 0;
   do {
   improve:
 
@@ -227,29 +237,13 @@ int *twoOpt(int *startTour, double **distances,
       A1 = tour[i];
       // Consecutive node to first node in pair
       A2 = tour[(i + 1) % numNodes];
-      // Randomness
-      /*
-            int random_index_i = rand() % (numNodes - 3);
 
-            A1 = tour[random_index_i];
-
-            A2 = tour[(random_index_i + 1) % numNodes];
-      */
-      stopAfter = (i == 0 ? numNodes - 2 : numNodes - 1);
-      // stopAfter = numNodes - 1;
+      // stopAfter = (i == 0 ? numNodes - 2 : numNodes - 1);
+      stopAfter = numNodes - 1;
       for (int j = (i + 2); j < stopAfter; j++) {
         B1 = tour[j];
         B2 = tour[(j + 1) % numNodes];
 
-        // Randomness
-        /*
-                int random_index_j = random_index_i + 2;
-                if (random_index_j >= stopAfter) {
-                  break;
-                }
-                B1 = tour[random_index_j];
-                B2 = tour[(random_index_j + 1) % numNodes];
-        */
         if (duration_cast<microseconds>(high_resolution_clock::now() -
                                         start_time)
                 .count() > 1998805) {
@@ -257,19 +251,14 @@ int *twoOpt(int *startTour, double **distances,
         }
         // Check if swapping edges gives a decrease in length
         double currentLength = distances[A1][A2] + distances[B1][B2];
-        double changedLength = distances[A1][B1] + distances[A2][B2];
+        dA1B1 = distances[A1][B1];
+        dA2B2 = distances[A2][B2];
 
-        if ((currentLength - changedLength) > 0) {
+        if ((currentLength - (dA1B1 + dA2B2)) > 0) {
 
           // Swap edges
           int LEFT = ((i + 1) % numNodes);
           int RIGHT = j;
-
-          // Randomness
-          /*
-                              int LEFT = ((random_index_i + 1) % numNodes);
-                              int RIGHT = ((random_index_j));
-          */
           int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
 
           for (int swap = 0; swap < numSwaps; ++swap) {
@@ -281,7 +270,59 @@ int *twoOpt(int *startTour, double **distances,
           }
 
           isOptimal = false;
+          break;
           // goto improve;
+        }
+
+        else {
+          dA2B1 = distances[A2][B1];
+          SwapNode = tour[(i + 2) % numNodes];
+          if (SwapNode != B1) {
+            if (((currentLength + distances[A2][SwapNode]) -
+                 (dA2B2 + dA2B1 + distances[A1][SwapNode])) > 0) {
+              // Swap edges
+              int _LEFT = ((i + 1) % numNodes);
+              int _RIGHT = j;
+              int LEFT = ((_LEFT + 1) % numNodes);
+              int RIGHT = _RIGHT;
+              int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
+
+              for (int swap = 0; swap < numSwaps; ++swap) {
+                int temp = tour[LEFT];
+                tour[LEFT] = tour[RIGHT];
+                tour[RIGHT] = temp;
+                LEFT = (LEFT + 1) % numNodes;
+                RIGHT = (numNodes + RIGHT - 1) % numNodes;
+              }
+
+              isOptimal = false;
+              break;
+            }
+          } else {
+            SwapNode = tour[(numNodes + j - 1) % numNodes];
+            if (SwapNode != A2) {
+              if (((currentLength + distances[B1][SwapNode]) -
+                   (dA1B1 + dA2B1 + distances[B2][SwapNode])) > 0) {
+                // Swap edges
+                int _LEFT = j;
+                int _RIGHT = i;
+                int LEFT = ((_LEFT + 1) % numNodes);
+                int RIGHT = _RIGHT;
+                int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
+
+                for (int swap = 0; swap < numSwaps; ++swap) {
+                  int temp = tour[LEFT];
+                  tour[LEFT] = tour[RIGHT];
+                  tour[RIGHT] = temp;
+                  LEFT = (LEFT + 1) % numNodes;
+                  RIGHT = (numNodes + RIGHT - 1) % numNodes;
+                }
+
+                isOptimal = false;
+                break;
+              }
+            }
+          }
         }
       }
     }

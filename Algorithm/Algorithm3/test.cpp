@@ -33,18 +33,7 @@ int *swapEdges(int *tour, int i, int j) {
   2. take route[i] to route[k] and add them in reverse order to new_route
   3. take route[k + 1] to end and add them in order to new_route
   */
-  for (int k = 0; k < i; k++) {
-    newTour[k] = tour[k];
-  }
-  int decrement = 0;
-  for (int k = i; k <= j; k++) {
-    newTour[k] = tour[j - decrement];
-    decrement++;
-  }
-  for (int k = j + 1; k < numNodes; k++) {
-    newTour[k] = tour[k];
-  }
-  /*
+
   int LEFT = ((i + 1) % numNodes);
   int RIGHT = j;
   int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
@@ -61,8 +50,7 @@ int *swapEdges(int *tour, int i, int j) {
     tour[RIGHT] = temp;
     LEFT = (LEFT + 1) % numNodes;
     RIGHT = (numNodes + RIGHT - 1) % numNodes;
-
   }
-  */
+
   return newTour;
 }
