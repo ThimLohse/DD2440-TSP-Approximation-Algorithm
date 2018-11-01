@@ -26,10 +26,9 @@ using namespace std::chrono;
 
 int main() {
 
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
   // Initalize timer
-  high_resolution_clock::time_point t1 = high_resolution_clock::now();
-  high_resolution_clock::time_point t2;
-  int currentTime;
 
   // Initalize line to read from std
   string line;
@@ -65,8 +64,20 @@ int main() {
   // starting points for minimize greedy. Using current time of the device.
   srand((unsigned int)(time(NULL)));
 
+  cin >> numNodes;
 
   // Read in all the vertices
+  int id = 0;
+  double x;
+  double y;
+  while (id < numNodes) {
+    cin >> x;
+    cin >> y;
+    coordinates.push_back(make_pair(x, y));
+    nodes.push_back(id);
+    id++;
+  }
+  /*
   while (getline(cin, line)) {
 
     // Extract number of nodes
@@ -87,23 +98,12 @@ int main() {
       id++;
     }
   }
-
-while (currentTime < 1850000) {
-  //  printf("time main: %f\n", currentTime);
-    distances = Functions::createDistMatrix(coordinates, numNodes);
-    greedyTour = Functions::minimizeGreedy(distances);
-    Functions::twoOpt(greedyTour, distances);
-
-    currentTime = duration_cast<microseconds>( high_resolution_clock::now() - t1 ).count();
-  }
-
-/*  for (int i : greedyTour) {
-    cout << i << endl;
-  } */
-  /*
-    t = clock() - t;
-    printf("It took me %lu clicks (%f seconds).\n", t,
-           ((float)t) / CLOCKS_PER_SEC);
   */
+  distances = Functions::createDistMatrix(coordinates, numNodes);
+  greedyTour = Functions::minimizeGreedy(distances);
+  Functions::twoOpt(greedyTour, distances);
+  for (int i : greedyTour) {
+    cout << i << "\n";
+  }
   return 0;
 }
