@@ -14,7 +14,8 @@
 #include <vector>
 
 // Global variable numNodes;
-int numNodes = 0;
+static int numNodes = 0;
+
 // run: make tsp_opt or make, then run: ./tsp < "input_file"
 using namespace std;
 using namespace std::chrono;
@@ -28,6 +29,9 @@ int *twoOpt(int *tour, double **distances,
             high_resolution_clock::time_point start_time);
 int *twoHOpt(int *tour, double **distances,
              high_resolution_clock::time_point start_time);
+
+int *twoOptDLB(int *tour, double **distances,
+               high_resolution_clock::time_point start_time);
 
 int main() {
 
@@ -52,8 +56,8 @@ int main() {
   double x;
   double y;
   bool isUsed;
-  double bestDist = __DBL_MAX__;
   double currentDist;
+  double bestDist = __DBL_MAX__;
   int startPoint;
   int *bestTour;
 
@@ -86,8 +90,9 @@ int main() {
     }
     // currentTour = greedyTour(distances, i);
     currentTour = greedyTour(distances, rand() % numNodes);
-    currentTour = twoOpt(currentTour, distances, start_time);
+    // currentTour = twoOpt(currentTour, distances, start_time);
     // currentTour = twoHOpt(currentTour, distances, start_time);
+    currentTour = twoOptDLB(currentTour, distances, start_time);
     currentDist = distance(currentTour, distances);
 
     if (currentDist < bestDist) {
@@ -95,9 +100,11 @@ int main() {
       bestTour = currentTour;
     }
   }
+
   for (int i = 0; i < numNodes; i++) {
     cout << bestTour[i] << "\n";
   }
+
   /*
     current_time =
         duration_cast<microseconds>(high_resolution_clock::now() - start_time)
@@ -108,9 +115,9 @@ int main() {
 
     cout << "time: " << (current_time / (pow(10, 6))) << " seconds"
          << "\n";
-
-    cout << "Best distance: " << distance(bestTour, distances) << "\n";
   */
+  // cout << "Best distance: " << distance(bestTour, distances) << "\n";
+
   return 0;
 }
 
@@ -151,12 +158,15 @@ double distance(int *tour, double **distances) {
 int *twoOpt(int *startTour, double **distances,
             high_resolution_clock::time_point start_time) {
 
+  double currentBest = __DBL_MAX__;
+  double changedLength = 0;
+  int *bestTour = startTour;
   int *tour = startTour;
   bool isOptimal = false;
   int stopAfter;
+  bool random = false;
   int A1, A2, B1, B2;
   do {
-  improve:
 
     isOptimal = true;
     for (int i = 0; i < numNodes - 3; i++) {
@@ -179,7 +189,7 @@ int *twoOpt(int *startTour, double **distances,
         if (duration_cast<microseconds>(high_resolution_clock::now() -
                                         start_time)
                 .count() > 1998805) {
-          return tour;
+          return bestTour;
         }
         // Check if swapping edges gives a decrease in length
         double currentLength = distances[A1][A2] + distances[B1][B2];
@@ -202,15 +212,21 @@ int *twoOpt(int *startTour, double **distances,
             LEFT = (LEFT + 1) % numNodes;
             RIGHT = (numNodes + RIGHT - 1) % numNodes;
           }
-
+          changedLength = distance(tour, distances);
+          if (changedLength < currentBest) {
+            currentBest = changedLength;
+            bestTour = tour;
+          }
           isOptimal = false;
           // goto improve;
           // break;
         }
       }
     }
+  improve:
+    random = true;
   } while (!isOptimal);
-  return tour;
+  return bestTour;
 }
 // Two opt with swap and reverse in same function for efficiency
 int *twoHOpt(int *startTour, double **distances,
@@ -231,6 +247,7 @@ int *twoHOpt(int *startTour, double **distances,
     for (int i = 0; i < numNodes - 3; i++) {
       if (duration_cast<microseconds>(high_resolution_clock::now() - start_time)
               .count() > 1998805) {
+
         return tour;
       }
       // First node in first pair
@@ -326,6 +343,144 @@ int *twoHOpt(int *startTour, double **distances,
         }
       }
     }
+  } while (!isOptimal);
+  return tour;
+}
+
+int *twoOptDLB(int *startTour, double **distances,
+               high_resolution_clock::time_point start_time) {
+
+  bool DLB[numNodes];
+  for (int i = 0; i < numNodes; i++) {
+    DLB[i] = false;
+  }
+  double changedLength = 0;
+  int *tour = startTour;
+  bool action_needed = true;
+  bool isOptimal = false;
+  int stopAfter;
+  int index_i;
+  int index_j;
+  int A1, A2, B1, B2;
+  bool FirstCheck = true;
+  do {
+
+    isOptimal = true;
+
+    if (FirstCheck) {
+      FirstCheck = false;
+      A1 = tour[(numNodes - 2)];
+      A2 = tour[(numNodes - 1)];
+      B1 = tour[0];
+      B2 = tour[1];
+
+      // Check if swapping edges gives a decrease in length
+      double currentLength = distances[A1][A2] + distances[B1][B2];
+      double changedLength = distances[A1][B1] + distances[A2][B2];
+      if ((currentLength - changedLength) > 0) {
+        DLB[A1] = false;
+        DLB[A2] = false;
+        DLB[B1] = false;
+        DLB[B2] = false;
+
+        // Swap edges
+        int _LEFT = index_i;
+        int _RIGHT = index_j;
+        int LEFT = ((_LEFT + 1) % numNodes);
+        int RIGHT = _RIGHT;
+
+        int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
+
+        for (int swap = 0; swap < numSwaps; ++swap) {
+          int temp = tour[LEFT];
+          tour[LEFT] = tour[RIGHT];
+          tour[RIGHT] = temp;
+          LEFT = (LEFT + 1) % numNodes;
+          RIGHT = (numNodes + RIGHT - 1) % numNodes;
+        }
+
+        isOptimal = false;
+        // break;
+        // goto breakPoint;
+      }
+    }
+
+    for (int i = 0; i < numNodes - 1; i++) {
+
+      if (duration_cast<microseconds>(high_resolution_clock::now() - start_time)
+              .count() > 1998805) {
+
+        return tour;
+      }
+      if (DLB[tour[i]]) {
+        continue;
+      }
+
+      // Direction 0 = forward, direction 1 = backwards
+      for (int direction = 0; direction < 2; direction++) {
+
+        if (direction == 0) {
+          // First node in first pair
+          index_i = i;
+        } else {
+          index_i = (numNodes + i - 1) % numNodes;
+        }
+        A1 = tour[index_i];
+        // Consecutive node to first node in pair
+        A2 = tour[(index_i + 1) % numNodes];
+
+        for (int j = 0; j < numNodes - 1; j++) {
+
+          index_j = j;
+          B1 = tour[index_j];
+          B2 = tour[(index_j + 1) % numNodes];
+
+          // The same or adjecent cities
+          if ((A1 == B1) || (A2 == B1) || (A1 == B2)) {
+            continue;
+          }
+
+          if (duration_cast<microseconds>(high_resolution_clock::now() -
+                                          start_time)
+                  .count() > 1998805) {
+            return tour;
+          }
+          // Check if swapping edges gives a decrease in length
+          double currentLength = distances[A1][A2] + distances[B1][B2];
+          double changedLength = distances[A1][B1] + distances[A2][B2];
+
+          if ((currentLength - changedLength) > 0) {
+            DLB[A1] = false;
+            DLB[A2] = false;
+            DLB[B1] = false;
+            DLB[B2] = false;
+
+            // Swap edges
+            int _LEFT = index_i;
+            int _RIGHT = index_j;
+            int LEFT = ((_LEFT + 1) % numNodes);
+            int RIGHT = _RIGHT;
+
+            int numSwaps = ((numNodes + (RIGHT - LEFT) + 1) % numNodes) / 2;
+
+            for (int swap = 0; swap < numSwaps; ++swap) {
+              int temp = tour[LEFT];
+              tour[LEFT] = tour[RIGHT];
+              tour[RIGHT] = temp;
+              LEFT = (LEFT + 1) % numNodes;
+              RIGHT = (numNodes + RIGHT - 1) % numNodes;
+            }
+
+            isOptimal = false;
+            // break;
+            // goto breakPoint;
+          }
+        }
+      }
+      DLB[tour[index_i]] = true;
+    }
+  breakPoint:
+    action_needed = true;
   } while (!isOptimal);
   return tour;
 }
