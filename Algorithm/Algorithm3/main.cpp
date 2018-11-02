@@ -108,9 +108,9 @@ int main() {
 
     cout << "time: " << (current_time / (pow(10, 6))) << " seconds"
          << "\n";
-
+         
     cout << "Best distance: " << distance(bestTour, distances) << "\n";
-  */
+*/
   return 0;
 }
 
@@ -153,6 +153,7 @@ int *twoOpt(int *startTour, double **distances,
 
   int *tour = startTour;
   bool isOptimal = false;
+  bool startWithReturnDist = true;
   int stopAfter;
   int A1, A2, B1, B2;
   do {
@@ -169,6 +170,11 @@ int *twoOpt(int *startTour, double **distances,
       A1 = tour[i];
       // Consecutive node to first node in pair
       A2 = tour[(i + 1) % numNodes];
+
+      if(startWithReturnDist == true) {
+        A1 = tour[numNodes-1];
+        A2 = tour[i];
+      }
 
       stopAfter = (i == 0 ? numNodes - 2 : numNodes - 1);
       // stopAfter = numNodes - 1;
@@ -206,6 +212,10 @@ int *twoOpt(int *startTour, double **distances,
           isOptimal = false;
           // goto improve;
           // break;
+        }
+        if(startWithReturnDist == true) {
+          startWithReturnDist=false;
+          i = -1;
         }
       }
     }
