@@ -80,19 +80,30 @@ int main() {
   srand((unsigned long)(time(NULL)));
   int limit = 1998805;
   // 1998805
+  /*
+    for (int i = 0; i < numNodes; i++) {
+      current_time =
+          duration_cast<microseconds>(high_resolution_clock::now() - start_time)
+              .count();
+      if (current_time >= limit) {
+        break;
+      }
+      // currentTour = greedyTour(distances, i);
+      currentTour = greedyTour(distances, rand() % numNodes);
+      // currentTour = twoOpt(currentTour, distances, start_time);
+      // currentTour = twoHOpt(currentTour, distances, start_time);
+      currentTour = twoOptDLB(currentTour, distances, start_time);
+      currentDist = distance(currentTour, distances);
+
+      if (currentDist < bestDist) {
+        bestDist = currentDist;
+        bestTour = currentTour;
+      }
+    }
+    */
 
   for (int i = 0; i < numNodes; i++) {
-    current_time =
-        duration_cast<microseconds>(high_resolution_clock::now() - start_time)
-            .count();
-    if (current_time >= limit) {
-      break;
-    }
-    // currentTour = greedyTour(distances, i);
-    currentTour = greedyTour(distances, rand() % numNodes);
-    // currentTour = twoOpt(currentTour, distances, start_time);
-    // currentTour = twoHOpt(currentTour, distances, start_time);
-    currentTour = twoOptDLB(currentTour, distances, start_time);
+    currentTour = greedyTour(distances, i);
     currentDist = distance(currentTour, distances);
 
     if (currentDist < bestDist) {
@@ -100,10 +111,11 @@ int main() {
       bestTour = currentTour;
     }
   }
-
-  for (int i = 0; i < numNodes; i++) {
-    cout << bestTour[i] << "\n";
-  }
+  /*
+    for (int i = 0; i < numNodes; i++) {
+      cout << bestTour[i] << "\n";
+    }
+  */
 
   /*
     current_time =
@@ -116,7 +128,7 @@ int main() {
     cout << "time: " << (current_time / (pow(10, 6))) << " seconds"
          << "\n";
   */
-  // cout << "Best distance: " << distance(bestTour, distances) << "\n";
+  cout << "Best distance: " << distance(bestTour, distances) << "\n";
 
   return 0;
 }
