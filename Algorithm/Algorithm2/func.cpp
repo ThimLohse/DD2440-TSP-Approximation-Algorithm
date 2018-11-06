@@ -146,7 +146,7 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
 
   clock_t start;
   start = clock();
-  float limit = float(1.0);
+  float limit = float(0.5);
   int best_i;
   int best_j;
   double best_improvement;

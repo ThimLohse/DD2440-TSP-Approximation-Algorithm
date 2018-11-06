@@ -7,6 +7,7 @@
 //
 
 // Standard headers
+#include <chrono>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -19,10 +20,13 @@
 
 // run: make tsp_opt or make, then run: ./tsp < "input_file"
 using namespace std;
+using namespace std::chrono;
 
-int main() {
+int main(void) {
 
-  ios::sync_with_stdio(false);
+  high_resolution_clock::time_point start_time = high_resolution_clock::now();
+  int current_time;
+  std::ios::sync_with_stdio(false);
   cin.tie(NULL);
   // Initalize timer
 
@@ -63,9 +67,15 @@ int main() {
   cin >> numNodes;
 
   // Read in all the vertices
-  int id = 0;
   double x;
   double y;
+  set<int> used;
+  bool isUsed;
+  double bestDist = 2147483637;
+  double currentDist;
+  int startPoint;
+  vector<int> tempTour;
+  vector<int> bestTour;
   while (id < numNodes) {
     cin >> x;
     cin >> y;
@@ -73,33 +83,42 @@ int main() {
     nodes.push_back(id);
     id++;
   }
-  /*
-  while (getline(cin, line)) {
 
-    // Extract number of nodes
-    if (first) {
-      numNodes = stod(line, &sz);
-      // reserve size for each vector to avoid time for allocating more space
-      // during read in
-      coordinates.reserve(numNodes);
-      nodes.reserve(numNodes);
-      first = false;
-    }
-    // Deconstruct line into (x,y)-coordinates
-    else {
-      double x = stod(line, &sz);
-      double y = stod(line.substr(sz));
-      coordinates.push_back(make_pair(x, y));
-      nodes.push_back(id);
-      id++;
-    }
-  }
-  */
+  // Generate distance matrix
   distances = Functions::createDistMatrix(coordinates, numNodes);
+  for (int i = 0; i < numNodes && current_time < 1500000; i++) {
+    isUsed = true;
+    /*
+    do {
+
+      startPoint = rand() % (numNodes - 1);
+      if (used.emplace(startPoint).second) {
+        isUsed = false;
+      }
+    } while (isUsed);
+    */
+    // startPoint = rand() % (numNodes - 1);
+    tempTour = Functions::greedy(distances, i);
+    Functions::twoOpt(tempTour, distances);
+    currentDist = Functions::tourLength(tempTour, distances);
+    if (currentDist < bestDist) {
+      bestTour = tempTour;
+      bestDist = currentDist;
+    }
+    current_time =
+        duration_cast<microseconds>(high_resolution_clock::now() - start_time)
+            .count();
+  }
+  /*
   greedyTour = Functions::minimizeGreedy(distances);
   Functions::twoOpt(greedyTour, distances);
-  for (int i : greedyTour) {
+  */
+  for (int i : bestTour) {
     cout << i << "\n";
   }
+  /*
+    cout << current_time << "\n";
+    cout << Functions::tourLength(bestTour, distances) << "\n";
+  */
   return 0;
 }
