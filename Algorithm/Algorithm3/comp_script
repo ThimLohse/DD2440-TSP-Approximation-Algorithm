@@ -1,0 +1,5 @@
+#!/bin/bash
+
+clear
+
+for f in samples/*.in; do echo $f; ./tsp_opt < $f; done;

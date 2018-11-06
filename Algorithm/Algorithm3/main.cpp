@@ -16,7 +16,7 @@
 // Global variable numNodes;
 static int numNodes = 0;
 
-// run: make tsp_opt or make, then run: ./tsp < "input_file"
+// run: make tsp_opt or make, then ru(24.27n: ./tsp < "input_file"
 using namespace std;
 using namespace std::chrono;
 
@@ -91,21 +91,21 @@ int main() {
 
     // currentTour = greedyTour(distances, i);
     currentTour = greedyTour(distances, rand() % numNodes);
-    // currentTour = twoOpt(currentTour, distances, start_time);
+    currentTour = twoOpt(currentTour, distances, start_time);
     // currentTour = twoHOpt(currentTour, distances, start_time);
-    currentTour = twoOptDLB(currentTour, distances, start_time);
+    // currentTour = twoOptDLB(currentTour, distances, start_time);
     currentDist = distance(currentTour, distances);
 
     if (currentDist < bestDist) {
-      bestDist = currentDist;
       bestTour = currentTour;
+      bestDist = currentDist;
     }
   }
 
-  for (int i = 0; i < numNodes; i++) {
-    cout << bestTour[i] << "\n";
-  }
-
+  /*  for (int i = 0; i < numNodes; i++) {
+      cout << bestTour[i] << "\n";
+    }
+*/
   /*
     current_time =
         duration_cast<microseconds>(high_resolution_clock::now() - start_time)
@@ -117,7 +117,8 @@ int main() {
     cout << "time: " << (current_time / (pow(10, 6))) << " seconds"
          << "\n";
   */
-  // cout << "Best distance: " << distance(bestTour, distances) << "\n";
+  cout << "Best distance: " << distance(bestTour, distances) << "\n";
+  cout << "\n\n";
 
   return 0;
 }
@@ -143,7 +144,7 @@ int *greedyTour(double **distances, int startPoint) {
       }
     }
     tour[i] = best;
-    used[best] = true;
+  used[best] = true;
   }
   return tour;
 }
@@ -164,11 +165,12 @@ int *twoOpt(int *startTour, double **distances,
   int *bestTour = startTour;
   int *tour = startTour;
   bool isOptimal = false;
+  bool random = false; ///??
   bool startWithReturnDist = true;
   int stopAfter;
-  bool used[numNodes];
   int A1, A2, B1, B2;
   do {
+  improve:
 
     isOptimal = true;
     for (int i = 0; i < numNodes - 3; i++) {
@@ -177,21 +179,20 @@ int *twoOpt(int *startTour, double **distances,
 
         return tour;
       }
-      int id;
       // First node in first pair
-      if(startWithReturnDist == true) {
-        id = numNodes-1;
-      } else {
-        id = rand () % numNodes;
-      }
-
-      A1 = tour[id];
+      A1 = tour[i];
       // Consecutive node to first node in pair
-      A2 = tour[(id + 1) % numNodes];
+      A2 = tour[(i + 1) % numNodes];
+
+      //id = 1;
+      if(startWithReturnDist == true) {
+          A1 = tour[numNodes-1];
+          A2 = tour[i];
+        }
 
         stopAfter = ( i == 0 ? numNodes - 2 : numNodes - 1);
       // stopAfter = numNodes - 1;
-      for (int j = (id + 2); j < stopAfter; j++) {
+      for (int j = (i + 2); j < stopAfter; j++) {
         B1 = tour[j % numNodes];
         B2 = tour[(j + 1) % numNodes];
 
@@ -207,7 +208,7 @@ int *twoOpt(int *startTour, double **distances,
         if ((currentLength - changedLength) > 0) {
 
           // Swap edges
-          int _LEFT = id;
+          int _LEFT = i;
           int _RIGHT = j;
           int LEFT = ((_LEFT + 1) % numNodes);
           int RIGHT = _RIGHT;
@@ -236,8 +237,6 @@ int *twoOpt(int *startTour, double **distances,
         }
       }
     }
-  improve:
-    random = true;
   } while (!isOptimal);
   return bestTour;
 }
@@ -248,6 +247,7 @@ int *twoHOpt(int *startTour, double **distances,
   int *tour = startTour;
 
   bool isOptimal = false;
+  bool startWithReturnDist = true;
   int stopAfter,id;
   int A1, A2, B1, B2, SwapNode;
 

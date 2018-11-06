@@ -51,7 +51,9 @@ double Functions::tourLength(vector<int> tour,
     // Add the distance between each node in the tour
     res += distances[tour[i]][tour[i + 1]];
   }
-  // Add the last distance to from first node to last node in tour to create
+  // Add the last distance to from first nthod was made instead of continuously
+calculate  every  node-pair  in  the  inner  loop  of  the  greedy  algorithm.   The
+greedy algorithm will not give an oode to last node in tour to create
   // cycle
   res += distances[tour[tour.size() - 1]][tour[0]];
   return res;
@@ -147,7 +149,7 @@ void Functions::twoOpt(vector<int> &tour, vector<vector<double>> distances) {
   srand((unsigned long)(time(NULL)));
   clock_t start;
   start = clock();
-  float limit = float(1.5);
+  float limit = float(0.5);
   int best_i;
   int best_j;
   double best_improvement;
