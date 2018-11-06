@@ -80,35 +80,23 @@ int main() {
   srand((unsigned long)(time(NULL)));
   int limit = 1998805;
   // 1998805
-  /*
-    for (int i = 0; i < numNodes; i++) {
-      current_time =
-          duration_cast<microseconds>(high_resolution_clock::now() - start_time)
-              .count();
-      if (current_time >= limit) {
-        break;
-      }
-      // currentTour = greedyTour(distances, i);
-      currentTour = greedyTour(distances, rand() % numNodes);
-      // currentTour = twoOpt(currentTour, distances, start_time);
-      // currentTour = twoHOpt(currentTour, distances, start_time);
-      currentTour = twoOptDLB(currentTour, distances, start_time);
-      currentDist = distance(currentTour, distances);
-
-      if (currentDist < bestDist) {
-        bestDist = currentDist;
-        bestTour = currentTour;
-      }
-    }
-    */
 
   for (int i = 0; i < numNodes; i++) {
-    currentTour = greedyTour(distances, i);
+    current_time =
+        duration_cast<microseconds>(high_resolution_clock::now() - start_time)
+            .count();
+    if (current_time >= limit) {
+      break;
+    }
+    currentTour = greedyTour(distances, rand() % numNodes);
+    currentTour = twoOpt(currentTour, distances, start_time);
+    // currentTour = twoHOpt(currentTour, distances, start_time);
+    // currentTour = twoOptDLB(currentTour, distances, start_time);
     currentDist = distance(currentTour, distances);
 
     if (currentDist < bestDist) {
-      bestDist = currentDist;
       bestTour = currentTour;
+      bestDist = currentDist;
     }
   }
   /*
@@ -116,7 +104,6 @@ int main() {
       cout << bestTour[i] << "\n";
     }
   */
-
   /*
     current_time =
         duration_cast<microseconds>(high_resolution_clock::now() - start_time)
@@ -129,6 +116,7 @@ int main() {
          << "\n";
   */
   cout << "Best distance: " << distance(bestTour, distances) << "\n";
+  cout << "\n\n";
 
   return 0;
 }
